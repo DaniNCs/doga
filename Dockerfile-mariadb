@@ -1,0 +1,9 @@
+# Dockerfile-mariadb
+
+FROM fedora:latest
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+RUN dnf update -y && dnf install mc procps-ng net-tools iproute iputils mariadb-server -y
+RUN mysql_install_db
+RUN mkdir -p /shared
+EXPOSE 3306
+ENTRYPOINT ["mariadbd", "-u", "root"]

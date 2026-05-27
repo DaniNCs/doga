@@ -1,0 +1,11 @@
+# Dockerfile-mysql
+
+FROM fedora:latest
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+RUN dnf update -y && dnf install mc procps-ng net-tools iproute iputils mysql-server -y
+RUN setcap -r /usr/libexec/mysqld
+RUN mysqld_pre_systemd
+RUN echo "bind-address=0.0.0.0" >> /etc/my.cnf.d/mysql-server.cnf
+RUN mkdir -p /shared
+EXPOSE 3306
+ENTRYPOINT ["mysqld", "-u", "mysql"]

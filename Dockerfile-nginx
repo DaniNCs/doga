@@ -1,0 +1,17 @@
+# Dockerfile-http
+
+FROM fedora:latest
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+RUN dnf update -y && dnf install mc httpd mod_ssl procps-ng net-tools iproute iputils openssl nginx -y
+RUN mkdir -p /etc/pki/tls/certs /etc/pki/tls/private && \
+    [ -f /etc/pki/tls/certs/localhost.crt] || openssl req -x509 -nodes -days 365 \
+      -subj "/C=HU/ST=Győr/L=Sopron/0=LocalDev/CN=localhost" \
+      -newkey rsa:2048 \
+      -keyout /etc/pki/tls/private/localhost.key \
+      -out /etc/pki/tls/certs/localhost.crt && \
+      dnf clean all
+
+RUN mkdir -p /shared
+EXPOSE 443 80
+VOLUME ["/usr/share/nginx/html"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

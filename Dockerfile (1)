@@ -1,0 +1,23 @@
+FROM fedora:latest
+
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+
+RUN dnf install httpd unzip mc php php-mysqlnd php-fpm procps -y
+
+RUN mkdir /wp
+
+COPY ./wordpress-6.9.zip /wp
+
+WORKDIR /wp
+
+RUN unzip ./wordpress-6.9.zip
+
+RUN cp /wp/wordpress/* /var/www/html -R
+
+COPY ./wp-config.php /var/www/html
+
+RUN mkdir -p /run/php-fpm
+
+EXPOSE 8080
+
+CMD ["sh","-c","php-fpm & exec /usr/sbin/httpd -DFOREGROUND"]

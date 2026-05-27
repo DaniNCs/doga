@@ -1,0 +1,8 @@
+FROM fedora:latest
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+RUN dnf update -y && dnf install python pip -y
+RUN pip install flask --proxy http://10.0.0.2:3128
+COPY ./app.py /app/app.py
+WORKDIR /app
+EXPOSE 5000
+CMD ["python", "app.py"]

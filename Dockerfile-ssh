@@ -1,0 +1,16 @@
+# docker build -t myfedora-ssh:v1 -f ./Dockerfile-ssh .
+# docker create -it -v /home/admin:/shared --name fedora-ssh01 -hostname fedora-ssh01 myfedora-ssh:v1
+# docker start fedora-ssh01
+# docker attach fedora-ssh01
+#
+# docker exec -it fedora-ssh01 /bin/bash
+# docker inspect <containerid_or_imageid>
+#
+
+FROM fedora:latest
+RUN echo "proxy=http://10.0.0.2:3128" >> /etc/dnf/dnf.conf
+RUN dnf update -y && dnf install mc openssh-server openssh-clients procps-ng net-tools iproute iputils  -y
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+RUN mkdir -p /shared
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]
