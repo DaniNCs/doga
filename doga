@@ -1,0 +1,23 @@
+dns
+
+$TTL 1D
+@	IN SOA	dns01.vallalat.local. root.vallalat.local. (
+					2024030301	; serial
+					1D		; refresh
+					1H		; retry
+					1W		; expire
+					3H )		; minimum
+	IN NS	dns01.vallalat.local.
+	IN A	192.168.1.10
+@	IN A	192.168.1.10
+dns01	IN A	192.168.1.10
+client	IN A	192.168.1.25
+
+wordpress
+
+wget https://www.wordpress.org/latest.tar.gz
+tar -xvf latest.tar.gz
+cd wordpress
+cp wp-config-sample.php wp-config.php
+
+  
